@@ -1,0 +1,27 @@
+## User-specific stuff
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docuser
+
+## Build results
+[Bb]in/
+[Oo]bj/
+
+## NuGet Packages
+*.nuget.cache
+*.nuget.props
+*.nuget.targets
+project.assets.json
+project.packagespec.json
+
+## Rider/Resharper specific
+_ReSharper*/
+compileData/
+modules.xml
+
+## OS generated files
+.DS_Store
+Thumbs.db
