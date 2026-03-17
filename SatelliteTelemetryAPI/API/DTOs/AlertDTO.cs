@@ -2,7 +2,7 @@ using SatelliteTelemetryAPI.Core.Enums;
 
 namespace SatelliteTelemetryAPI.Core.Models;
 
-public record Alert(
+public record AlertDTO(
     string SatelliteId,
     string Reason,
     AlertType AlertType,
