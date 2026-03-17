@@ -18,7 +18,7 @@ public class TelemetryController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddSatellitesTelemetries([FromBody] List<TelemetryDTO>? telemetryList)
+    public async Task<IActionResult> AddSatellitesTelemetries([FromBody] List<SatelliteTelemetryDTO>? telemetryList)
     {
         if (telemetryList == null || telemetryList.Count == 0)
             return BadRequest("Telemetry list cannot be null or empty.");
