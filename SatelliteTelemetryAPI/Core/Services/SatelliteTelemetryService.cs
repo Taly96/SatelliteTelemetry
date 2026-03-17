@@ -6,7 +6,7 @@ namespace SatelliteTelemetryAPI.Core.Services;
 
 public class SatelliteTelemetryService : ITelemetryService
 {
-    public async Task<bool> AddTelemetriesToRecordAsync(IReadOnlyList<SatelliteTelemetryDTO> records)
+    public Task<bool> AddTelemetriesToRecordAsync(IReadOnlyList<SatelliteTelemetryDTO> records)
     {
         throw new NotImplementedException();
     }
