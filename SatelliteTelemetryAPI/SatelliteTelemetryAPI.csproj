@@ -12,9 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="API\DTOs\" />
-      <Folder Include="Core\" />
-      <Folder Include="Infrastructure\" />
+        <Folder Include="Infrastructure\"/>
     </ItemGroup>
 
 </Project>
