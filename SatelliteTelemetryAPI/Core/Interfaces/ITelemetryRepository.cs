@@ -1,11 +1,15 @@
+using SatelliteTelemetryAPI.API.DTOs;
 using SatelliteTelemetryAPI.Infrastructure.Persistence.Entities;
 
 namespace SatelliteTelemetryAPI.Core.Interfaces;
 
 public interface ITelemetryRepository
 {
-    Task AddReadingsAsync(IEnumerable<SatelliteTelemetryEntity> entities);
-    Task<IEnumerable<SatelliteTelemetryEntity>> GetRecentReadingsAsync(string satelliteId, int count);
+    Task AddTelemetryReadingsAsync(IEnumerable<SatelliteTelemetryEntity> entities);
+
+    Task<IEnumerable<SatelliteTelemetryEntity>> GetRecentTelemetryReadingsAsync(Guid satelliteId, int count);
+
     Task AddAlertAsync(AlertEntity alert);
-    Task<IEnumerable<AlertEntity>> GetAllAlertsAsync();
+
+    Task<IEnumerable<AlertEntity>> GetActiveFilteredAlertsAsync(AlertFiltersDTO filters);
 }
