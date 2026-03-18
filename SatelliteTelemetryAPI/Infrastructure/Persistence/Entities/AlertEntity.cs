@@ -1,3 +1,5 @@
+using SatelliteTelemetryAPI.Core.Enums;
+
 namespace SatelliteTelemetryAPI.Infrastructure.Persistence.Entities;
 
-public record AlertEntity(string SatelliteId, string Message, DateTime CreatedAt);
+public record AlertEntity(Guid SatelliteId, AlertType AlertType, string Message, DateTime CreatedAt);

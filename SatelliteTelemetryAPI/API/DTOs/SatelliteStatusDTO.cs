@@ -1,6 +1,6 @@
 namespace SatelliteTelemetryAPI.API.DTOs;
 
 public record SatelliteStatusDTO(
-    string SatelliteId,
+    Guid SatelliteId,
     SatelliteTelemetryDTO LastReading,
     double AverageTemperature);
