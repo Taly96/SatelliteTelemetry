@@ -5,7 +5,7 @@ namespace SatelliteTelemetryAPI.Core.Interfaces;
 
 public interface ITelemetryService
 {
-    Task<bool> AddTelemetriesToRecordAsync(IReadOnlyList<SatelliteTelemetryDTO> records);
-    Task<SatelliteStatusDTO?> GetSatelliteStatusAsync(string satelliteId);
-    Task<IReadOnlyList<AlertDTO>> GetActiveAlertsAsync();
+    Task AddTelemetriesToRecordAsync(IReadOnlyList<SatelliteTelemetryDTO> records);
+    Task<SatelliteStatusDTO?> GetSatelliteStatusAsync(Guid satelliteId);
+    Task<IReadOnlyList<AlertDTO>> GetActiveAlertsAsync(AlertFiltersDTO filters);
 }
