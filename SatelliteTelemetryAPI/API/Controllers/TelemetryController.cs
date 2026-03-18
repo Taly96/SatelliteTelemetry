@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SatelliteTelemetryAPI.API.DTOs;
 using SatelliteTelemetryAPI.Core.Interfaces;
+using SatelliteTelemetryAPI.Core.Models;
 
 namespace SatelliteTelemetryAPI.API.Controllers;
 
@@ -9,6 +10,7 @@ namespace SatelliteTelemetryAPI.API.Controllers;
 public class TelemetryController : ControllerBase
 {
     private readonly ILogger<TelemetryController> _logger;
+
     private readonly ITelemetryService _telemetryService;
 
     public TelemetryController(ILogger<TelemetryController> logger, ITelemetryService telemetryService)
@@ -21,40 +23,86 @@ public class TelemetryController : ControllerBase
     public async Task<IActionResult> AddSatellitesTelemetries([FromBody] List<SatelliteTelemetryDTO>? telemetryList)
     {
         if (telemetryList == null || telemetryList.Count == 0)
+        {
+            _logger.LogWarning("AddSatellitesTelemetries called with null or empty list.");
+
             return BadRequest("Telemetry list cannot be null or empty.");
+        }
 
         try
         {
-            var success = await _telemetryService.AddTelemetriesToRecordAsync(telemetryList);
+            _logger.LogInformation("Processing batch of {Count} telemetry records.", telemetryList.Count);
+            await _telemetryService.AddTelemetriesToRecordAsync(telemetryList);
 
-            if (success)
-            {
-                _logger.LogInformation("Successfully processed {Count} telemetry records.", telemetryList.Count);
+            return StatusCode(StatusCodes.Status201Created, new { message = "Records added successfully" });
+        }
+        catch (ArgumentException argumentException)
+        {
+            _logger.LogWarning(argumentException, "Validation error while processing telemetry.");
 
-                return StatusCode(StatusCodes.Status201Created, new { message = "Records added successfully" });
-            }
-
-            _logger.LogWarning("Telemetry service returned failure for batch update.");
-
-            return UnprocessableEntity("The data was valid but could not be processed at this time.");
+            return BadRequest(argumentException.Message);
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "An unhandled error occurred while adding telemetries.");
+            _logger.LogError(exception, "Unexpected error in AddSatellitesTelemetries.");
 
-            return StatusCode(StatusCodes.Status500InternalServerError, "An internal error occurred.");
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "An internal error occurred while processing telemetry.");
         }
     }
 
-    [HttpGet(":id/status")]
-    public IActionResult GetSatelliteStatus()
+    [HttpGet("satellites/{id}/status")]
+    public async Task<ActionResult<SatelliteStatusDTO>> GetSatelliteStatus(Guid satelliteId)
     {
-        return Ok();
+        if (satelliteId == Guid.Empty)
+        {
+            _logger.LogWarning("GetStatus called with an empty Guid.");
+
+            return BadRequest("A valid Satellite ID is required.");
+        }
+
+        try
+        {
+            _logger.LogDebug("Fetching status for satellite: {SatelliteId}", satelliteId);
+            var satelliteStatus = await _telemetryService.GetSatelliteStatusAsync(satelliteId);
+
+            if (satelliteStatus != null)
+            {
+                _logger.LogInformation("Found satellite status: {SatelliteId}", satelliteId);
+
+                return Ok(satelliteStatus);
+            }
+
+            _logger.LogInformation("Status not found for satellite: {SatelliteId}", satelliteId);
+
+            return NotFound($"Satellite {satelliteId} not found.");
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "Error fetching status for satellite {SatelliteId}", satelliteId);
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving satellite status.");
+        }
     }
 
     [HttpGet("alerts")]
-    public IActionResult GetActiveAlerts()
+    public async Task<ActionResult<IEnumerable<AlertDTO>>> GetSatellitesAlerts(
+        [FromQuery] AlertFiltersDTO alertsFilters)
     {
-        return Ok();
+        try
+        {
+            _logger.LogInformation("Fetching alerts: Page {Page}, Size {Size}", alertsFilters.PageNumber,
+                alertsFilters.PageSize);
+
+            var activeAlerts = await _telemetryService.GetActiveAlertsAsync(alertsFilters);
+
+            return Ok(activeAlerts);
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "Error fetching alerts with provided filters.");
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving alerts.");
+        }
     }
 }
