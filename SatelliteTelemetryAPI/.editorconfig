@@ -1,0 +1,22 @@
+root = true
+
+[*.cs]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+charset = utf-8
+
+csharp_preserve_single_line_blocks = true
+csharp_preserve_single_line_statements = true
+resharper_csharp_place_simple_method_on_single_line = true
+
+csharp_new_line_before_open_brace = all
+resharper_csharp_brace_style = next_line
+
+csharp_using_directive_placement = outside_namespace:warning
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_prefer_braces = true:suggestion
+
+resharper_csharp_place_simple_blocks_on_single_line = true
+
+csharp_preferred_modifier_order = public, private, protected, internal, static, extern, new, virtual, abstract, sealed, override, readonly, unsafe, volatile, async:suggestion
